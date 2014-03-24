@@ -58,6 +58,7 @@ describe('lib/config', function() {
         it('should return the value of a property in a sub object', function() {
             config.get('sub.key').should.be.eq('anOtherValue');
             config.get(['sub', 'key']).should.be.eq('anOtherValue');
+            config.get.bind(['sub', 'noKey']).should.throw();
         });
     });
 });
