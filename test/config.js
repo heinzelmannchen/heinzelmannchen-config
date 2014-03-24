@@ -49,8 +49,7 @@ describe('lib/config', function() {
             config.get('key').should.be.eq('value');
         });
         it('should throw an error if the config has no key = "noKey"', function() {
-            config.get.bind('noKey').should.
-            throw ();
+            config.get.bind('noKey').should.throw();
         });
         it('should return an array if the property is an array', function() {
             config.get('array').should.be.eql([1, 2, 3]);
