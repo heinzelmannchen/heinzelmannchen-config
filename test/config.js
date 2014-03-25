@@ -3,6 +3,7 @@ var chai = require('chai'),
     should = chai.Should(),
     mockFs = require('mock-fs'),
     sinon = require('sinon'),
+    _ = require('underscore'),
     Config = require('../lib/config');
 
 describe('lib/config', function() {
@@ -15,19 +16,19 @@ describe('lib/config', function() {
             Config.should.be.a('function');
         });
         it('should call the injected function', function() {
-            Config(spy);
+            Config(spy, _).load();
             return spy.should.have.been.called;
         });
         it('should set a appname and the defaults for the configfile name', function() {
-            Config(spy);
+            Config(spy, _).load();
             return spy.should.have.been.calledWithMatch('heinzel', {});
         });
         it('should be possible to overwrite the appname and the defaults', function() {
-            Config(spy, 'anton', 10);
+            Config(spy, _).load('anton', 10);
             return spy.should.have.been.calledWithMatch('anton', 10);
         });
         it('should return an object', function() {
-            Config(sinon.stub().returns({})).should.be.an('object');
+            Config(sinon.stub().returns({}), _).load().should.be.an('object');
         });
     });
     describe('#get', function() {
@@ -40,7 +41,7 @@ describe('lib/config', function() {
                     key: 'anOtherValue'
                 }
             });
-            config = Config(stub);
+            config = Config(stub, _).load();
         });
         it('should have a function get', function() {
             config.should.respondTo('get');
