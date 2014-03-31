@@ -91,7 +91,9 @@ describe('lib/config', function() {
         beforeEach(function() {
             stub = sinon.stub().returns('/here/is/my/local/.heinzelrc');
             config = Config({
-                findup: stub
+                findup: {
+                    sync: stub
+                }
             });
         });
         it('should return the path to the local config file', function() {
@@ -153,8 +155,7 @@ describe('lib/config', function() {
         it('should set properties in sub objects', function() {
             config.set({
                 leaveMeAlone: 'Berti',
-                heinzel: {
-                }
+                heinzel: {}
             }, 'heinzel.name', 'Anton').should.be.eql({
                 leaveMeAlone: 'Berti',
                 heinzel: {
@@ -178,14 +179,19 @@ describe('lib/config', function() {
         var fsStub, config;
         beforeEach(function() {
             fsStub = {
-                readFile: sinon.stub().returns({ }),
+                readFile: sinon.stub().returns({}),
                 writeFile: sinon.spy()
             };
             config = Config({
                 q: q,
                 underscore: _,
                 fs: fsStub,
-                findup: sinon.stub().returns('/local/.heinzelrc')
+                findup: {
+                    sync: sinon.stub().returns('/local/.heinzelrc')
+                },
+                path: {
+                    join: sinon.stub().returns('~/.heinzelrc')
+                }
             });
         });
         it('should save a property in the local config', function() {
@@ -197,15 +203,19 @@ describe('lib/config', function() {
         var fsStub, config;
         beforeEach(function() {
             fsStub = {
-                readFile: sinon.stub().returns({ }),
+                readFile: sinon.stub().returns({}),
                 writeFile: sinon.spy()
             };
             config = Config({
-                path: path,
                 q: q,
                 underscore: _,
                 fs: fsStub,
-                findup: sinon.stub().returns('/local/.heinzelrc')
+                findup: {
+                    sync: sinon.stub().returns('/local/.heinzelrc')
+                },
+                path: {
+                    join: sinon.stub().returns('~/.heinzelrc')
+                }
             });
         });
         it('should save a property in the global config', function() {
