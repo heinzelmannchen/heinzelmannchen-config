@@ -19,8 +19,7 @@ sample config
 ```
 
 ```javascript
-var Config = require('heinzelmannchen-config'),
-    config = Config();
+var config = require('heinzelmannchen-config');
 
 config.get('key'); // value
 config.get('sub.key'); // anOtherValue

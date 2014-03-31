@@ -16,19 +16,31 @@ describe('lib/config', function() {
             Config.should.be.a('function');
         });
         it('should call the injected function', function() {
-            Config(spy, _).load();
+            Config({
+                rc: spy,
+                underscore: _
+            }).load();
             return spy.should.have.been.called;
         });
         it('should set a appname and the defaults for the configfile name', function() {
-            Config(spy, _).load();
+            Config({
+                rc: spy,
+                underscore: _
+            }).load();
             return spy.should.have.been.calledWithMatch('heinzel', {});
         });
         it('should be possible to overwrite the appname and the defaults', function() {
-            Config(spy, _).load('anton', 10);
+            Config({
+                rc: spy,
+                underscore: _
+            }).load('anton', 10);
             return spy.should.have.been.calledWithMatch('anton', 10);
         });
         it('should return an object', function() {
-            Config(sinon.stub().returns({}), _).load().should.be.an('object');
+            Config({
+                rc: sinon.stub().returns({}),
+                underscore: _
+            }).load().should.be.an('object');
         });
     });
     describe('#get', function() {
@@ -41,7 +53,10 @@ describe('lib/config', function() {
                     key: 'anOtherValue'
                 }
             });
-            config = Config(stub, _).load();
+            config = Config({
+                rc: stub,
+                underscore: _
+            }).load();
         });
         it('should have a function get', function() {
             config.should.respondTo('get');
@@ -50,8 +65,10 @@ describe('lib/config', function() {
             config.get('key').should.be.eq('value');
         });
         it('should throw an error if the config has no key = "noKey"', function() {
-            config.get.bind('noKey').should.throw();
-            config.get.bind().should.throw();
+            config.get.bind('noKey').should.
+            throw ();
+            config.get.bind().should.
+            throw ();
         });
         it('should return an array if the property is an array', function() {
             config.get('array').should.be.eql([1, 2, 3]);
@@ -59,14 +76,17 @@ describe('lib/config', function() {
         it('should return the value of a property in a sub object', function() {
             config.get('sub.key').should.be.eq('anOtherValue');
             config.get(['sub', 'key']).should.be.eq('anOtherValue');
-            config.get.bind(['sub', 'noKey']).should.throw();
+            config.get.bind(['sub', 'noKey']).should.
+            throw ();
         });
     });
     describe('#getLocalConfigPath', function() {
         var stub, config;
         beforeEach(function() {
             stub = sinon.stub().returns('/here/is/my/local/.heinzelrc');
-            config = Config(null, _, stub);
+            config = Config({
+                findup: stub
+            });
         });
         it('should return the path to the local config file', function() {
             config.getLocalConfigPath().should.be.eq('/here/is/my/local/.heinzelrc');
@@ -82,7 +102,9 @@ describe('lib/config', function() {
             stub = {
                 join: sinon.stub().returns('~/.heinzelrc')
             };
-            config = Config(null, _, null, stub);
+            config = Config({
+                path: stub
+            });
         });
         it('should return the path to the global config file', function() {
             config.getGlobalConfigPath().should.be.eq('~/.heinzelrc');
@@ -90,6 +112,20 @@ describe('lib/config', function() {
         it('should call findup', function() {
             config.getGlobalConfigPath();
             stub.join.should.have.been.calledWith('~', '.heinzelrc');
+        });
+    });
+    describe.skip('#saveLocal', function() {
+        var fsStub, config;
+        beforeEach(function() {
+            fsStub = {
+                join: sinon.stub().returns('~/.heinzelrc')
+            };
+            config = Config({
+                fs: fsStub
+            });
+        });
+        it('should save a property in the local config', function() {
+            config.save('heinzel', 'anton');
         });
     });
 });
