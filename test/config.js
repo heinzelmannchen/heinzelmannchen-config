@@ -176,10 +176,11 @@ describe('lib/config', function() {
         var fsStub, config;
         beforeEach(function() {
             fsStub = {
-                readFile: sinon.stub(),
+                readFile: sinon.stub().returns({ }),
                 writeFile: sinon.spy()
             };
             config = Config({
+                underscore: _,
                 fs: fsStub,
                 findup: sinon.stub().returns('/local/.heinzelrc')
             });
@@ -187,6 +188,9 @@ describe('lib/config', function() {
         it('should save a property in the local config', function() {
             config.saveLocal('heinzel', 'anton');
             fsStub.readFile.should.have.been.calledWith('/local/.heinzelrc');
+            fsStub.writeFile.should.have.been.calledWith('/local/.heinzelrc', {
+                heinzel: 'anton'
+            });
         });
     });
 });
