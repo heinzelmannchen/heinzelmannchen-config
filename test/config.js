@@ -4,6 +4,7 @@ var chai = require('chai'),
     mockFs = require('mock-fs'),
     sinon = require('sinon'),
     _ = require('underscore'),
+    path = require('path'),
     q = require('q'),
     Config = require('../lib/config');
 
@@ -189,6 +190,26 @@ describe('lib/config', function() {
         });
         it('should save a property in the local config', function() {
             return config.saveLocal('heinzel', 'anton').should.be.resolve;
+        });
+    });
+
+    describe('#saveGlobal', function() {
+        var fsStub, config;
+        beforeEach(function() {
+            fsStub = {
+                readFile: sinon.stub().returns({ }),
+                writeFile: sinon.spy()
+            };
+            config = Config({
+                path: path,
+                q: q,
+                underscore: _,
+                fs: fsStub,
+                findup: sinon.stub().returns('/local/.heinzelrc')
+            });
+        });
+        it('should save a property in the global config', function() {
+            return config.saveGlobal('heinzel', 'anton').should.be.resolve;
         });
     });
 });
