@@ -6,7 +6,9 @@ var chai = require('chai'),
     _ = require('underscore'),
     Config = require('../lib/config');
 
+
 describe('lib/config', function() {
+
     describe('#', function() {
         var spy;
         beforeEach(function() {
@@ -43,6 +45,7 @@ describe('lib/config', function() {
             }).load().should.be.an('object');
         });
     });
+
     describe('#get', function() {
         var stub, config;
         beforeEach(function() {
@@ -80,6 +83,7 @@ describe('lib/config', function() {
             throw ();
         });
     });
+
     describe('#getLocalConfigPath', function() {
         var stub, config;
         beforeEach(function() {
@@ -96,6 +100,7 @@ describe('lib/config', function() {
             stub.should.have.been.calledWith('.', '.heinzelrc');
         });
     });
+
     describe('#getRootConfigPath', function() {
         var stub, config;
         beforeEach(function() {
@@ -114,18 +119,34 @@ describe('lib/config', function() {
             stub.join.should.have.been.calledWith('~', '.heinzelrc');
         });
     });
-    describe.skip('#saveLocal', function() {
+
+    describe('#set', function() {
+        var config;
+        beforeEach(function() {
+            config = Config({
+                underscore: _
+            });
+        });
+        it('should have a function set', function() {
+            config.should.respondTo('set');
+        });
+    });
+
+    describe('#saveLocal', function() {
         var fsStub, config;
         beforeEach(function() {
             fsStub = {
-                join: sinon.stub().returns('~/.heinzelrc')
+                readFile: sinon.stub(),
+                writeFile: sinon.spy()
             };
             config = Config({
-                fs: fsStub
+                fs: fsStub,
+                findup: sinon.stub().returns('/local/.heinzelrc')
             });
         });
         it('should save a property in the local config', function() {
-            config.save('heinzel', 'anton');
+            config.saveLocal('heinzel', 'anton');
+            fsStub.readFile.should.have.been.calledWith('/local/.heinzelrc');
         });
     });
 });
