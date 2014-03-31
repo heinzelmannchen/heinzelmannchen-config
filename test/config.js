@@ -62,4 +62,34 @@ describe('lib/config', function() {
             config.get.bind(['sub', 'noKey']).should.throw();
         });
     });
+    describe('#getLocalConfigPath', function() {
+        var stub, config;
+        beforeEach(function() {
+            stub = sinon.stub().returns('/here/is/my/local/.heinzelrc');
+            config = Config(null, _, stub);
+        });
+        it('should return the path to the local config file', function() {
+            config.getLocalConfigPath().should.be.eq('/here/is/my/local/.heinzelrc');
+        });
+        it('should call findup', function() {
+            config.getLocalConfigPath();
+            stub.should.have.been.calledWith('.', '.heinzelrc');
+        });
+    });
+    describe('#getRootConfigPath', function() {
+        var stub, config;
+        beforeEach(function() {
+            stub = {
+                join: sinon.stub().returns('~/.heinzelrc')
+            };
+            config = Config(null, _, null, stub);
+        });
+        it('should return the path to the global config file', function() {
+            config.getGlobalConfigPath().should.be.eq('~/.heinzelrc');
+        });
+        it('should call findup', function() {
+            config.getGlobalConfigPath();
+            stub.join.should.have.been.calledWith('~', '.heinzelrc');
+        });
+    });
 });
