@@ -23,7 +23,8 @@
   "dependencies": {
     "rc": "~0.3.4",
     "underscore": "~1.6.0",
-    "findup": "~0.1.4"
+    "findup": "~0.1.4",
+    "q": "~1.0.1"
   },
   "devDependencies": {
     "mocha": "~1.18.2",

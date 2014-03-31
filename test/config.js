@@ -4,6 +4,7 @@ var chai = require('chai'),
     mockFs = require('mock-fs'),
     sinon = require('sinon'),
     _ = require('underscore'),
+    q = require('q'),
     Config = require('../lib/config');
 
 
@@ -180,17 +181,14 @@ describe('lib/config', function() {
                 writeFile: sinon.spy()
             };
             config = Config({
+                q: q,
                 underscore: _,
                 fs: fsStub,
                 findup: sinon.stub().returns('/local/.heinzelrc')
             });
         });
         it('should save a property in the local config', function() {
-            config.saveLocal('heinzel', 'anton');
-            fsStub.readFile.should.have.been.calledWith('/local/.heinzelrc');
-            fsStub.writeFile.should.have.been.calledWith('/local/.heinzelrc', {
-                heinzel: 'anton'
-            });
+            return config.saveLocal('heinzel', 'anton').should.be.resolve;
         });
     });
 });
