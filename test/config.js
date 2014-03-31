@@ -130,6 +130,46 @@ describe('lib/config', function() {
         it('should have a function set', function() {
             config.should.respondTo('set');
         });
+        it('should set the value of a given key', function() {
+            config.set({}, 'heinzel', 'Anton').should.be.eql({
+                heinzel: 'Anton'
+            });
+            config.set({
+                heinzel: 'Berti'
+            }, 'heinzel', 'Anton').should.be.eql({
+                heinzel: 'Anton'
+            });
+        });
+        it('should not affect other properties', function() {
+            config.set({
+                leaveMeAlone: 'Berti'
+            }, 'heinzel', 'Anton').should.be.eql({
+                leaveMeAlone: 'Berti',
+                heinzel: 'Anton'
+            });
+        });
+        it('should set properties in sub objects', function() {
+            config.set({
+                leaveMeAlone: 'Berti',
+                heinzel: {
+                }
+            }, 'heinzel.name', 'Anton').should.be.eql({
+                leaveMeAlone: 'Berti',
+                heinzel: {
+                    name: 'Anton'
+                }
+            });
+        });
+        it('should create sub objects if they dont exist', function() {
+            config.set({
+                leaveMeAlone: 'Berti'
+            }, 'heinzel.name', 'Anton').should.be.eql({
+                leaveMeAlone: 'Berti',
+                heinzel: {
+                    name: 'Anton'
+                }
+            });
+        });
     });
 
     describe('#saveLocal', function() {
