@@ -6,5 +6,6 @@ module.exports = Config({
     underscore: require('underscore'),
     fs: require('fs'),
     path: require('path'),
-    findup: require('findup')
+    findup: require('findup'),
+    jsonpretty: require('jsonpretty')
 }).load('heinzel');
