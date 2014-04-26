@@ -54,8 +54,10 @@ describe('lib/config', function() {
             stub = sinon.stub().returns({
                 key: 'value',
                 array: [1, 2, 3],
+                parentProp: 'parent',
                 sub: {
-                    key: 'anOtherValue'
+                    key: 'anOtherValue',
+                    child: {}
                 }
             });
             config = Config({
@@ -77,6 +79,11 @@ describe('lib/config', function() {
         });
         it('should return an array if the property is an array', function() {
             config.get('array').should.be.eql([1, 2, 3]);
+        });
+        it('should return the property of the parent object if not in object', function() {
+            config.get('sub.parentProp').should.be.eql('parent');
+            config.get('sub.child.parentProp').should.be.eql('parent');
+            config.get.bind({},'sub.child.fail').should.throw(Error);
         });
         it('should return the value of a property in a sub object', function() {
             config.get('sub.key').should.be.eq('anOtherValue');
