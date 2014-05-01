@@ -182,6 +182,42 @@ describe('lib/config', function() {
         });
     });
 
+    describe('#unset', function() {
+        var config;
+        beforeEach(function() {
+            config = Config({
+                underscore: _
+            });
+        });
+        it('should have a function unset', function() {
+            config.should.respondTo('unset');
+        });
+        it('should unset the value of a given key', function() {
+            config.unset({
+                heinzel: 'Anton'
+            }, 'heinzel', 'Anton').should.be.eql({ });
+        });
+        it('should not affect other properties', function() {
+            config.unset({
+                leaveMeAlone: 'Berti',
+                heinzel: 'Anton'
+            }, 'heinzel').should.be.eql({
+                leaveMeAlone: 'Berti'
+            });
+        });
+        it('should unset properties in sub objects', function() {
+            config.unset({
+                leaveMeAlone: 'Berti',
+                heinzel: {
+                    name: 'Anton'
+                }
+            }, 'heinzel.name').should.be.eql({
+                leaveMeAlone: 'Berti',
+                heinzel: {
+                }
+            });
+        });
+    });
     describe('#saveLocal', function() {
         var fsStub, config;
         beforeEach(function() {
@@ -206,6 +242,30 @@ describe('lib/config', function() {
         });
     });
 
+    describe('#removeLocal', function() {
+        var fsStub, config;
+        beforeEach(function() {
+            fsStub = {
+                readFile: sinon.stub().returns({}),
+                writeFile: sinon.spy()
+            };
+            config = Config({
+                q: q,
+                underscore: _,
+                fs: fsStub,
+                findup: {
+                    sync: sinon.stub().returns('/local/.heinzelrc')
+                },
+                path: {
+                    join: sinon.stub().returns('~/.heinzelrc')
+                }
+            });
+        });
+        it('should remove a property in the local config', function() {
+            return config.removeLocal('heinzel').should.be.resolve;
+        });
+    });
+
     describe('#saveGlobal', function() {
         var fsStub, config;
         beforeEach(function() {
@@ -227,6 +287,30 @@ describe('lib/config', function() {
         });
         it('should save a property in the global config', function() {
             return config.saveGlobal('heinzel', 'anton').should.be.resolve;
+        });
+    });
+
+    describe('#removeGlobal', function() {
+        var fsStub, config;
+        beforeEach(function() {
+            fsStub = {
+                readFile: sinon.stub().returns({}),
+                writeFile: sinon.spy()
+            };
+            config = Config({
+                q: q,
+                underscore: _,
+                fs: fsStub,
+                findup: {
+                    sync: sinon.stub().returns('/local/.heinzelrc')
+                },
+                path: {
+                    join: sinon.stub().returns('~/.heinzelrc')
+                }
+            });
+        });
+        it('should remove a property in the global config', function() {
+            return config.removeGlobal('heinzel').should.be.resolve;
         });
     });
 });
