@@ -1,6 +1,6 @@
 {
   "name": "heinzelmannchen-config",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Adapter for heinzlemannchen configuration",
   "main": "index.js",
   "scripts": {
